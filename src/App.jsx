@@ -187,8 +187,19 @@ const AppContent = () => {
     const lessonTitle = courseData.modules.find(m => m.id === moduleId).lessons_list[lessonIndex];
     setCurrentLesson({ id: lessonId, title: lessonTitle });
 
-    const lessonFile = lessonTitle.toLowerCase().replace(/ /g, "_").replace(/\(/g, "").replace(/\)/g, "").replace(/,/g, "").replace(/&/g, "and") + ".md";
-    const fetchedContent = await getFileContent(`/lessons/${lessonFile.replace(/[^a-zA-Z0-9_\.\-]/g, '')}`);
+    // Transform lesson title to match actual filename pattern
+    const lessonFile = lessonTitle
+      .toLowerCase()
+      .replace(/ /g, "_")
+      .replace(/\(/g, "_")
+      .replace(/\)/g, "_")
+      .replace(/,/g, ",")
+      .replace(/&/g, "_and_")
+      .replace(/_+/g, "_") // Replace multiple underscores with single
+      .replace(/,_/g, ",_") // Handle comma-underscore combinations
+      + ".md";
+    
+    const fetchedContent = await getFileContent(`/lessons/${lessonFile}`);
     setLessonContent(fetchedContent);
     setCurrentView('lesson');
   };
@@ -540,7 +551,11 @@ const AppContent = () => {
 
   const renderContent = () => {
     if (currentView === 'lesson') {
-      return <LessonContentView lessonTitle={currentLesson.title} content={lessonContent} onComplete={handleCompleteLesson} />;
+      return <LessonContentView 
+        lesson={{ title: currentLesson.title, content: lessonContent }} 
+        onBack={() => setCurrentView('modules')} 
+        onComplete={handleCompleteLesson} 
+      />;
     }
     if (currentView === 'cheatsheet') {
     return <CheatSheetView sheet={currentCheatSheet} onBack={() => setCurrentView("resources")} />;
