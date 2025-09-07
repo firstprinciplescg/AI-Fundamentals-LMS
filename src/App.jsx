@@ -191,12 +191,14 @@ const AppContent = () => {
     const lessonFile = lessonTitle
       .toLowerCase()
       .replace(/ /g, "_")
-      .replace(/\(/g, "_")
-      .replace(/\)/g, "_")
-      .replace(/,/g, ",")
+      .replace(/\(/g, "_(")
+      .replace(/\)/g, ")_")
+      .replace(/,/g, ",_")
       .replace(/&/g, "_and_")
       .replace(/_+/g, "_") // Replace multiple underscores with single
-      .replace(/,_/g, ",_") // Handle comma-underscore combinations
+      .replace(/,__/g, ",_") // Handle double underscores after commas
+      .replace(/\)__/g, ")_") // Handle double underscores after closing paren
+      .replace(/_$/, "") // Remove trailing underscore
       + ".md";
     
     const fetchedContent = await getFileContent(`/lessons/${lessonFile}`);

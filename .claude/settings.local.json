@@ -17,7 +17,9 @@
       "Bash(git push:*)",
       "Bash(npm run build:*)",
       "Bash(npx tailwindcss init:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Read(//c/Users/Owner/Pictures/Screenshots/**)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []
