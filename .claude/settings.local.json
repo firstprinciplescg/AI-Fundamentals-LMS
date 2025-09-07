@@ -13,7 +13,11 @@
       "Bash(choco install:*)",
       "Bash(gh:*)",
       "Bash(where gh)",
-      "Bash(refreshenv)"
+      "Bash(refreshenv)",
+      "Bash(git push:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": []
