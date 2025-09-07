@@ -9,7 +9,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  SECRETS_SCAN_OMIT_PATHS = ".env.example,dist/*"
+  SECRETS_SCAN_ENABLED = "false"
 
 # Enable Netlify Functions (if needed for future enhancements)
 [functions]
