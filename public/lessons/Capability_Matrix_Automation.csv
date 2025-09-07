@@ -1,0 +1,3 @@
+Platform,Hosting,AI agent features,Chatbot support,Connectors,Scheduling,Webhooks/API,Code nodes,Human-in-the-loop,Versioning/Logs,Best for,Limitations
+Zapier,SaaS,Yes,Yes,Large catalog,Yes,Yes,Yes (JS/Python variants),Approvals & drafts,Run history & logs,Speed to value; non-dev teams,Complex branching can be hard
+n8n,Self-host/SaaS,Yes,Via nodes/bridges,Hundreds + HTTP,Yes,Yes,Yes (JS/Function/HTTP),Custom steps/portals,Self-managed + telemetry,Privacy/control; complex logic,Requires ops & maintenance

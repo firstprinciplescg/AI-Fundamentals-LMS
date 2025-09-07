@@ -1,0 +1,23 @@
+{
+  "name": "create-ai-fundamentals-online-course-website-with-uploaded-files-(1)",
+  "version": "1.0.0",
+  "description": "This folder contains syllabus, lesson summaries, cheat sheets, capability matrices, projects, and a large prompt pack.",
+  "main": "utils.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.2",
+    "@vitejs/plugin-react": "^5.0.2",
+    "lucide-react": "^0.542.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "vite": "^7.1.4"
+  }
+}

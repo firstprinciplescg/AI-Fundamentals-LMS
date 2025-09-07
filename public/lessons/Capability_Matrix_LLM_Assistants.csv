@@ -1,0 +1,6 @@
+Platform,Flagship/Notes,Multimodal I/O,Web‑grounded search,Citations,Realtime voice,Phone/telephony,Projects/Workspaces,Tool/Plugin support,Native agent features,Enterprise controls,Good for,Cautions
+ChatGPT,General-purpose assistant,Yes,Available,Available (context-dependent),Available,Via integrations,Yes,Yes,Yes,Yes,"Content, research, structured drafting",Governance for action-taking
+Claude,Long-context analysis,Yes,Via integrations,Available (with grounding),Available (varies),Via partners,Yes,Yes (varies),Emerging/varies,Yes,Deep synthesis & reliability,Specify rubrics to reduce drift
+Gemini,Native multimodality,Yes,Available,Available (context-dependent),Available,Via partners,Yes,Yes,Yes/varies,Yes,Workspace-integrated automations,Mailbox/drive permissions
+Perplexity,Search-first assistant,Yes,Native,Native,Limited/varies,N/A,Yes/varies,Via API/bridges,Limited/varies,Yes/varies,Research with sources,Verify critical claims
+Manus,Autonomous agent (emerging),Varies,Varies,Varies,Varies,Varies,Varies,Varies,Yes (experimental),Unknown/varies,Low-risk sandboxed tasks,Treat as experimental
