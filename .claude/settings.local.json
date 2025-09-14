@@ -30,7 +30,14 @@
       "Bash(curl:*)",
       "Bash(git rm:*)",
       "Bash(grep:*)",
-      "Bash(npx vite-bundle-analyzer:*)"
+      "Bash(npx vite-bundle-analyzer:*)",
+      "Read(//c/Users/Owner/**)",
+      "Bash(tree:*)",
+      "Bash(sed:*)",
+      "Bash(for file in src/components/admin/*.jsx)",
+      "Bash(do grep -B12 \"} from ''''../icons''''\" \"$file\")",
+      "Bash(done)",
+      "Bash(npm run preview:*)"
     ],
     "deny": [],
     "ask": []

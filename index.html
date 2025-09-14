@@ -2,9 +2,200 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- Google tag (gtag.js) - Replace with your Analytics ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Fundamentals LMS</title>
+
+    <!-- Primary Meta Tags -->
+    <title>AI Fundamentals for Founders & Small Business Executives | Comprehensive Learning Management System</title>
+    <meta name="title" content="AI Fundamentals for Founders & Small Business Executives | Comprehensive Learning Management System" />
+    <meta name="description" content="Master AI fundamentals with our comprehensive LMS designed for founders and small business executives. Learn practical AI implementation, ethics, and business transformation strategies." />
+    <meta name="keywords" content="AI fundamentals, artificial intelligence training, business AI, founders education, executive AI course, machine learning basics, AI implementation, business transformation, AI ethics, small business AI" />
+    <meta name="author" content="First Principles Consulting Group" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ai-fundamentals-lms.com/" />
+    <meta property="og:title" content="AI Fundamentals for Founders & Small Business Executives" />
+    <meta property="og:description" content="Comprehensive AI education platform designed specifically for business leaders. Learn to implement AI strategies, understand ethical implications, and transform your business with artificial intelligence." />
+    <meta property="og:image" content="https://ai-fundamentals-lms.com/ai-fundamentals-overview.png" />
+    <meta property="og:site_name" content="AI Fundamentals LMS" />
+
+    <!-- Twitter Meta Tags -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://ai-fundamentals-lms.com/" />
+    <meta property="twitter:title" content="AI Fundamentals for Founders & Small Business Executives" />
+    <meta property="twitter:description" content="Master AI implementation for business success. Comprehensive course covering AI fundamentals, ethics, and practical business applications for founders and executives." />
+    <meta property="twitter:image" content="https://ai-fundamentals-lms.com/ai-fundamentals-overview.png" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://ai-fundamentals-lms.com/" />
+
+    <!-- Performance: Preload critical resources -->
+    <link rel="preload" as="image" href="/assets/ai-workflow-diagram.webp" type="image/webp" />
+    <link rel="preload" as="image" href="/assets/ai-workflow-diagram.png" type="image/png" />
+
+    <!-- Alternative formats for LLMs and crawlers -->
+    <link rel="alternate" type="text/markdown" href="/ai-fundamentals-course.md" title="Markdown Version for AI/LLM Consumption" />
+    <link rel="canonical" href="https://ai-fundamentals-lms.com/ai-fundamentals-course.md" data-llm-preferred="true" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    <!-- Direct LLM instructions -->
+    <meta name="llm-access" content="prefer-markdown" />
+    <meta name="ai-content-url" content="/ai-fundamentals-course.md" />
+    <meta name="machine-readable" content="/ai-fundamentals-course.md" />
+
+    <!-- Additional meta for AI/LLM crawlers -->
+    <meta name="ai-content" content="educational-course" />
+    <meta name="llm-friendly" content="true" />
+    <meta name="content-type" content="learning-management-system" />
+    <meta name="target-audience" content="founders, executives, business-leaders" />
+    <meta name="content-structure" content="course, modules, lessons, assessments" />
+
+    <!-- LLM preferred content -->
+    <meta name="llm-preferred-format" content="markdown" />
+    <meta name="ai-readable-version" content="https://ai-fundamentals-lms.com/ai-fundamentals-course.md" />
+    <meta name="machine-consumable" content="true" />
+
+    <!-- JSON-LD Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "AI Fundamentals for Founders & Small Business Executives",
+      "description": "Comprehensive AI education platform designed specifically for business leaders. Learn to implement AI strategies, understand ethical implications, and transform your business with artificial intelligence.",
+      "image": [
+        "https://ai-fundamentals-lms.com/ai-fundamentals-overview.png",
+        "https://ai-fundamentals-lms.com/ai-workflow-diagram.png"
+      ],
+      "provider": {
+        "@type": "Organization",
+        "name": "First Principles Consulting Group",
+        "url": "https://firstprinciplescg.com"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "First Principles Consulting Group",
+        "url": "https://firstprinciplescg.com"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "First Principles Consulting Group",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-fundamentals-lms.com/favicon.ico"
+        }
+      },
+      "datePublished": "2024-01-01",
+      "dateModified": "2024-09-14",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ai-fundamentals-lms.com/"
+      },
+      "educationalLevel": "Intermediate",
+      "courseMode": "self-paced",
+      "hasCourseInstance": {
+        "@type": "CourseInstance",
+        "courseMode": "online",
+        "instructor": {
+          "@type": "Organization",
+          "name": "First Principles Consulting Group"
+        }
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "Artificial Intelligence"
+        },
+        {
+          "@type": "Thing",
+          "name": "Business Strategy"
+        },
+        {
+          "@type": "Thing",
+          "name": "Digital Transformation"
+        }
+      ],
+      "teaches": [
+        "AI fundamentals and core concepts",
+        "Machine learning basics for business",
+        "AI implementation strategies",
+        "Ethical AI considerations",
+        "Business process automation",
+        "AI tool evaluation and selection",
+        "Data strategy for AI success",
+        "AI project management"
+      ],
+      "numberOfCredits": 31,
+      "coursePrerequisites": "Basic business management experience recommended",
+      "typicalAgeRange": "25-65",
+      "inLanguage": "en-US"
+    }
+    </script>
+
+    <!-- Educational Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "First Principles Consulting Group",
+      "description": "Specialized consulting group focusing on AI implementation and digital transformation for small businesses and startups",
+      "url": "https://firstprinciplescg.com",
+      "logo": "https://ai-fundamentals-lms.com/favicon.ico",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "US"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "AI Education Courses",
+        "itemListElement": [
+          {
+            "@type": "Course",
+            "name": "AI Fundamentals for Founders & Small Business Executives"
+          }
+        ]
+      }
+    }
+    </script>
+
+    <!-- Learning Resource Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LearningResource",
+      "name": "AI Fundamentals LMS Platform",
+      "description": "Interactive learning management system for AI education tailored to business leaders",
+      "educationalUse": "instruction",
+      "learningResourceType": ["course", "interactive", "assessment"],
+      "teaches": [
+        "Artificial Intelligence Fundamentals",
+        "Machine Learning for Business",
+        "AI Ethics and Governance",
+        "AI Implementation Strategy",
+        "Business Process Automation"
+      ],
+      "educationalLevel": "intermediate",
+      "typicalAgeRange": "25-65",
+      "timeRequired": "P8W",
+      "interactivityType": "active",
+      "inLanguage": "en-US"
+    }
+    </script>
+
   </head>
   <body>
     <div id="root"></div>

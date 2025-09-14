@@ -14,6 +14,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
+  const [userRole, setUserRole] = useState(null)
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState([])
 
@@ -30,12 +31,21 @@ export const AuthProvider = ({ children }) => {
     email: 'demo@example.com',
     name: 'Demo User'
   }
+
+  // DEV MODE: Mock admin role for testing
+  const DEV_MOCK_ADMIN_ROLE = {
+    role: 'admin',
+    permissions: ['manage_content', 'manage_users', 'view_analytics']
+  }
+
   const DEV_BYPASS_AUTH = import.meta.env.VITE_DEV_MODE === 'true'
 
   useEffect(() => {
     if (DEV_BYPASS_AUTH) {
-      // In dev mode, set mock user and skip Supabase
+      // In dev mode, set mock user and admin role
+      console.log('🔧 Development mode enabled - bypassing authentication')
       setUser(DEV_MOCK_USER)
+      setUserRole(DEV_MOCK_ADMIN_ROLE)
       setLoading(false)
       return
     }
@@ -48,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         
         if (user) {
           await loadUserProfile(user.id)
+          await loadUserRole(user.id)
           await loadUserProgress(user.id)
         }
       } catch (error) {
@@ -65,9 +76,11 @@ export const AuthProvider = ({ children }) => {
         
         if (session?.user) {
           await loadUserProfile(session.user.id)
+          await loadUserRole(session.user.id)
           await loadUserProgress(session.user.id)
         } else {
           setProfile(null)
+          setUserRole(null)
           setProgress([])
         }
         setLoading(false)
@@ -86,6 +99,14 @@ export const AuthProvider = ({ children }) => {
     const { data, error } = await db.profiles.get(userId)
     if (!error && data) {
       setProfile(data)
+    }
+  }
+
+  const loadUserRole = async (userId) => {
+    if (DEV_BYPASS_AUTH) return
+    const { data, error } = await db.roles.get(userId)
+    if (!error && data) {
+      setUserRole(data)
     }
   }
 
@@ -165,16 +186,44 @@ export const AuthProvider = ({ children }) => {
     return new Set(progress.filter(p => p.completed).map(p => p.lesson_id))
   }
 
+  // Admin/permission helper functions
+  const isAdmin = () => {
+    return userRole?.role === 'admin' || userRole?.role === 'super_admin'
+  }
+
+  const isSuperAdmin = () => {
+    return userRole?.role === 'super_admin'
+  }
+
+  const hasPermission = (permission) => {
+    if (!userRole) return false
+    return userRole.role === 'super_admin' ||
+           userRole.permissions?.includes(permission) ||
+           (userRole.role === 'admin' && ['manage_content', 'manage_users', 'view_analytics'].includes(permission))
+  }
+
+  const canManageContent = () => hasPermission('manage_content')
+  const canManageUsers = () => hasPermission('manage_users')
+  const canViewAnalytics = () => hasPermission('view_analytics')
+
   const value = {
     user,
     profile,
+    userRole,
     loading,
     progress,
     signUp,
     signIn,
     signOut,
     markLessonComplete,
-    getCompletedLessons
+    getCompletedLessons,
+    // Admin functions
+    isAdmin,
+    isSuperAdmin,
+    hasPermission,
+    canManageContent,
+    canManageUsers,
+    canViewAnalytics
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

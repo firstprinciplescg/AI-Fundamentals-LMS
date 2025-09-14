@@ -1,7 +1,8 @@
 // Content caching system using browser storage
 // Caches lesson content, cheat sheets, and other frequently accessed data
+// Supports both hardcoded content and CMS-managed content
 
-const CACHE_VERSION = 'v1'
+const CACHE_VERSION = 'v2'
 const CACHE_PREFIX = 'ai-fundamentals-'
 const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
@@ -10,7 +11,12 @@ const CACHE_KEYS = {
   LESSON_CONTENT: 'lesson-content',
   CHEAT_SHEETS: 'cheat-sheets',
   MATRICES: 'matrices',
-  PROJECTS: 'projects'
+  PROJECTS: 'projects',
+  // CMS content
+  CMS_COURSES: 'cms-courses',
+  CMS_MODULES: 'cms-modules',
+  CMS_LESSONS: 'cms-lessons',
+  CMS_MEDIA: 'cms-media'
 }
 
 class ContentCache {
@@ -223,6 +229,139 @@ export const projectsCache = {
   get: () => contentCache.get(CACHE_KEYS.PROJECTS, 'main'),
   set: (content) => contentCache.set(CACHE_KEYS.PROJECTS, 'main', content),
   remove: () => contentCache.remove(CACHE_KEYS.PROJECTS, 'main')
+}
+
+// CMS-specific caches
+export const cmsCoursesCache = {
+  get: (courseId = 'all') => contentCache.get(CACHE_KEYS.CMS_COURSES, courseId),
+  set: (courseId = 'all', content) => contentCache.set(CACHE_KEYS.CMS_COURSES, courseId, content),
+  remove: (courseId = 'all') => contentCache.remove(CACHE_KEYS.CMS_COURSES, courseId),
+  clear: () => {
+    // Clear all course-related cache entries
+    try {
+      const keys = Object.keys(localStorage)
+      keys.forEach(key => {
+        if (key.includes(`${CACHE_PREFIX}${CACHE_VERSION}-${CACHE_KEYS.CMS_COURSES}`)) {
+          localStorage.removeItem(key)
+          contentCache.memoryCache.delete(key)
+        }
+      })
+    } catch (error) {
+      console.warn('Course cache clear error:', error)
+    }
+  }
+}
+
+export const cmsModulesCache = {
+  get: (moduleId = 'all') => contentCache.get(CACHE_KEYS.CMS_MODULES, moduleId),
+  set: (moduleId = 'all', content) => contentCache.set(CACHE_KEYS.CMS_MODULES, moduleId, content),
+  remove: (moduleId = 'all') => contentCache.remove(CACHE_KEYS.CMS_MODULES, moduleId),
+  clear: () => {
+    try {
+      const keys = Object.keys(localStorage)
+      keys.forEach(key => {
+        if (key.includes(`${CACHE_PREFIX}${CACHE_VERSION}-${CACHE_KEYS.CMS_MODULES}`)) {
+          localStorage.removeItem(key)
+          contentCache.memoryCache.delete(key)
+        }
+      })
+    } catch (error) {
+      console.warn('Module cache clear error:', error)
+    }
+  }
+}
+
+export const cmsLessonsCache = {
+  get: (lessonId) => contentCache.get(CACHE_KEYS.CMS_LESSONS, lessonId),
+  set: (lessonId, content) => contentCache.set(CACHE_KEYS.CMS_LESSONS, lessonId, content),
+  remove: (lessonId) => contentCache.remove(CACHE_KEYS.CMS_LESSONS, lessonId),
+  clear: () => {
+    try {
+      const keys = Object.keys(localStorage)
+      keys.forEach(key => {
+        if (key.includes(`${CACHE_PREFIX}${CACHE_VERSION}-${CACHE_KEYS.CMS_LESSONS}`)) {
+          localStorage.removeItem(key)
+          contentCache.memoryCache.delete(key)
+        }
+      })
+    } catch (error) {
+      console.warn('Lesson cache clear error:', error)
+    }
+  }
+}
+
+export const cmsMediaCache = {
+  get: (mediaId = 'all') => contentCache.get(CACHE_KEYS.CMS_MEDIA, mediaId),
+  set: (mediaId = 'all', content) => contentCache.set(CACHE_KEYS.CMS_MEDIA, mediaId, content),
+  remove: (mediaId = 'all') => contentCache.remove(CACHE_KEYS.CMS_MEDIA, mediaId),
+  clear: () => {
+    try {
+      const keys = Object.keys(localStorage)
+      keys.forEach(key => {
+        if (key.includes(`${CACHE_PREFIX}${CACHE_VERSION}-${CACHE_KEYS.CMS_MEDIA}`)) {
+          localStorage.removeItem(key)
+          contentCache.memoryCache.delete(key)
+        }
+      })
+    } catch (error) {
+      console.warn('Media cache clear error:', error)
+    }
+  }
+}
+
+// Cache invalidation helpers
+export const invalidateRelatedCaches = (contentType, contentId) => {
+  switch (contentType) {
+    case 'lesson':
+      // Invalidate lesson cache
+      cmsLessonsCache.remove(contentId)
+      // Invalidate parent module cache (lessons list might have changed)
+      cmsModulesCache.clear()
+      // Invalidate courses cache (lesson count might have changed)
+      cmsCoursesCache.clear()
+      break
+    case 'module':
+      // Invalidate module cache
+      cmsModulesCache.remove(contentId)
+      // Invalidate courses cache (module count might have changed)
+      cmsCoursesCache.clear()
+      // Invalidate all lessons in this module
+      cmsLessonsCache.clear()
+      break
+    case 'course':
+      // Invalidate everything since course structure might have changed
+      cmsCoursesCache.remove(contentId)
+      cmsModulesCache.clear()
+      cmsLessonsCache.clear()
+      break
+    case 'media':
+      cmsMediaCache.remove(contentId)
+      break
+  }
+}
+
+// Preload CMS content
+export const preloadCmsContent = async () => {
+  try {
+    // Import cms here to avoid circular dependency
+    const { cms } = await import('./supabase')
+
+    // Preload published courses
+    const coursesResult = await cms.courses.getAll(false)
+    if (!coursesResult.error && coursesResult.data) {
+      cmsCoursesCache.set('published', coursesResult.data)
+    }
+
+    // Preload published modules for first course if available
+    if (coursesResult.data && coursesResult.data.length > 0) {
+      const modulesResult = await cms.modules.getByCourse(coursesResult.data[0].id, false)
+      if (!modulesResult.error && modulesResult.data) {
+        cmsModulesCache.set(`course-${coursesResult.data[0].id}`, modulesResult.data)
+      }
+    }
+  } catch (error) {
+    console.warn('CMS content preload error:', error)
+  }
 }
 
 export default contentCache

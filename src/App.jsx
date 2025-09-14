@@ -38,6 +38,7 @@ import { useAuth } from './contexts/AuthContext.jsx';
 import { getFileContent, safeAsync } from './lib/utils';
 import HeroPlaceholder from './assets/hero-placeholder.jsx';
 import { useContentPreloader, useContextualPreloader, useIntelligentPreloader } from './hooks/useContentPreloader.js';
+import CMSDashboard from './components/admin/CMSDashboard.jsx';
 
 // Import lazy-loaded components
 import {
@@ -48,7 +49,7 @@ import {
 } from './components/LazyComponents.jsx';
 
 const AppContent = () => {
-  const { user, markLessonComplete, getCompletedLessons, signOut } = useAuth()
+  const { user, markLessonComplete, getCompletedLessons, signOut, canManageContent } = useAuth()
   const [currentView, setCurrentView] = useState('dashboard')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [currentModule, setCurrentModule] = useState(null)
@@ -197,7 +198,11 @@ const AppContent = () => {
     { id: 'modules', label: 'Modules', icon: BookOpen },
     { id: 'resources', label: 'Resources', icon: FileText },
     { id: 'projects', label: 'Projects', icon: Lightbulb },
-    { id: 'progress', label: 'Progress', icon: Award }
+    { id: 'progress', label: 'Progress', icon: Award },
+    // Admin-only navigation
+    ...(canManageContent() ? [
+      { id: 'cms', label: 'Content Management', icon: Settings }
+    ] : [])
   ]
 
   const handleSelectLesson = async (moduleId, lessonIndex) => {
@@ -647,6 +652,8 @@ const AppContent = () => {
         return <LazyProjectsView content={projectsContent} />
       case 'matrix':
         return <LazyCapabilityMatrixView matrix={currentMatrix} onBack={() => setCurrentView('resources')} />
+      case 'cms':
+        return <CMSDashboard />
       default:
         return <DashboardView />
     }
