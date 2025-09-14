@@ -108,3 +108,6 @@ temp/
 *.tar.gz
 *.zip
 *.rar
+
+# Development notes
+notes/

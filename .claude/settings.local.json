@@ -19,7 +19,17 @@
       "Bash(npx tailwindcss init:*)",
       "Bash(npm uninstall:*)",
       "Read(//c/Users/Owner/Pictures/Screenshots/**)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(cat:*)",
+      "Bash(npm run dev:*)",
+      "Bash(claude auth logout)",
+      "Bash(claude auth status)",
+      "Bash(claude --version)",
+      "Bash(claude whoami)",
+      "Bash(where claude)",
+      "Bash(curl:*)",
+      "Bash(git rm:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

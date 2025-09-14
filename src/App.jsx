@@ -32,6 +32,8 @@ import './App.css'
 // Import components
 import LessonContentView from './components/LessonContentView.jsx';
 import CheatSheetView from './components/CheatSheetView.jsx';
+import ProjectsView from './components/ProjectsView.jsx';
+import CapabilityMatrixView from './components/CapabilityMatrixView.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import AuthWrapper from './components/auth/AuthWrapper.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
@@ -656,6 +658,16 @@ const AppContent = () => {
   )
 }
 
+// Temporary test without auth
+const TestApp = () => {
+  return (
+    <div className="min-h-screen bg-gray-50 p-8">
+      <h1 className="text-3xl font-bold text-blue-600 mb-4">AI Fundamentals LMS - Test Mode</h1>
+      <p className="text-gray-600">If you can see this, React is working. Authentication is temporarily disabled for testing.</p>
+    </div>
+  )
+}
+
 const App = () => {
   return (
     <AuthProvider>
@@ -667,11 +679,3 @@ const App = () => {
 }
 
 export default App
-
-
-
-import ProjectsView from './components/ProjectsView.jsx';
-
-
-import CapabilityMatrixView from './components/CapabilityMatrixView.jsx';
-

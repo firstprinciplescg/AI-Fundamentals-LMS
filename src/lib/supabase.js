@@ -1,5 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
+// PRODUCTION CHECKLIST:
+// [ ] Remove fallback values
+// [ ] Ensure real Supabase project credentials are in .env
+// [ ] Test database connections
+
 // These will be environment variables in production
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'your-supabase-url'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-supabase-anon-key'

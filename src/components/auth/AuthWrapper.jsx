@@ -4,9 +4,26 @@ import LoginForm from './LoginForm'
 import SignupForm from './SignupForm'
 import { Brain } from 'lucide-react'
 
+// DEV MODE: Environment-based authentication bypass
+const DEV_BYPASS_AUTH = import.meta.env.VITE_DEV_MODE === 'true'
+
 const AuthWrapper = ({ children }) => {
   const { user, loading } = useAuth()
   const [isLoginMode, setIsLoginMode] = useState(true)
+
+  // Development bypass - remove this block before production
+  if (DEV_BYPASS_AUTH) {
+    return (
+      <>
+        <div className="bg-yellow-500 text-black text-center py-2 text-sm font-medium fixed top-0 left-0 right-0 z-[100]">
+          ⚠️ DEV MODE - Authentication Disabled
+        </div>
+        <div className="pt-8">
+          {children}
+        </div>
+      </>
+    )
+  }
 
   if (loading) {
     return (
