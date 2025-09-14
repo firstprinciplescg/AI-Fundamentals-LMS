@@ -37,7 +37,8 @@
       "Bash(for file in src/components/admin/*.jsx)",
       "Bash(do grep -B12 \"} from ''''../icons''''\" \"$file\")",
       "Bash(done)",
-      "Bash(npm run preview:*)"
+      "Bash(npm run preview:*)",
+      "WebFetch(domain:aifundamentalslms.netlify.app)"
     ],
     "deny": [],
     "ask": []

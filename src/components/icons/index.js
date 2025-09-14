@@ -75,5 +75,6 @@ export {
   ArrowLeft,
   ArrowRight,
   XCircle,
-  MessageSquare
+  MessageSquare,
+  ArrowUpDown
 } from 'lucide-react'

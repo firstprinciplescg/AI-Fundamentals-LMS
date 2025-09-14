@@ -5,16 +5,23 @@ import { createClient } from '@supabase/supabase-js'
 // [ ] Ensure real Supabase project credentials are in .env
 // [ ] Test database connections
 
+// Check if we're in development mode
+const isDevMode = import.meta.env.VITE_DEV_MODE === 'true'
+
 // These will be environment variables in production
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'your-supabase-url'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-supabase-anon-key'
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Only create Supabase client if not in dev mode or if we have real credentials
+export const supabase = isDevMode && supabaseUrl.includes('demo')
+  ? null
+  : createClient(supabaseUrl, supabaseAnonKey)
 
 // Auth helpers
 export const auth = {
   // Sign up new user
   signUp: async (email, password, userData = {}) => {
+    if (!supabase) return { data: null, error: { message: 'Development mode - auth disabled' } }
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -27,6 +34,7 @@ export const auth = {
 
   // Sign in user
   signIn: async (email, password) => {
+    if (!supabase) return { data: null, error: { message: 'Development mode - auth disabled' } }
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
@@ -36,17 +44,20 @@ export const auth = {
 
   // Sign out user
   signOut: async () => {
+    if (!supabase) return { error: null }
     const { error } = await supabase.auth.signOut()
     return { error }
   },
 
   // Get current user
   getCurrentUser: () => {
+    if (!supabase) return Promise.resolve({ data: { user: null }, error: null })
     return supabase.auth.getUser()
   },
 
   // Listen to auth changes
   onAuthStateChange: (callback) => {
+    if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } }
     return supabase.auth.onAuthStateChange(callback)
   }
 }

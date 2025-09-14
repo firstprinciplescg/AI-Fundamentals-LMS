@@ -342,9 +342,10 @@ const AppContent = () => {
                   Hands-on Labs
                 </Badge>
               </div>
-              <Button 
-                size="lg" 
-                className="bg-white text-blue-600 hover:bg-blue-50"
+              <Button
+                variant="outline"
+                size="lg"
+                className="bg-white text-blue-600 hover:bg-blue-50 border-white"
                 onClick={() => setCurrentView('modules')}
               >
                 Start Learning <ChevronRight className="ml-2 h-4 w-4" />
@@ -517,12 +518,12 @@ const AppContent = () => {
             
             return (
               <Card key={index} className={`transition-all cursor-pointer ${isCompleted ? 'bg-green-50 border-green-200' : 'hover:shadow-md'}`}>
-                <CardContent className="p-4 flex items-center justify-between">
+                <CardContent className="p-6 flex items-center justify-between min-h-[72px]">
                   <div className="flex items-center gap-4">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isCompleted ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}>
                       {isCompleted ? <CheckCircle className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                     </div>
-                    <div>
+                    <div className="flex items-center">
                       <h3 className="font-semibold">{lesson}</h3>
                     </div>
                   </div>
