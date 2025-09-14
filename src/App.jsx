@@ -3,13 +3,13 @@ import { Button } from './components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card.jsx'
 import { Badge } from './components/ui/badge.jsx'
 import { Progress } from './components/ui/progress.jsx'
-import { 
-  BookOpen, 
-  Users, 
-  Brain, 
-  Zap, 
-  Target, 
-  Shield, 
+import {
+  BookOpen,
+  Users,
+  Brain,
+  Zap,
+  Target,
+  Shield,
   Trophy,
   Play,
   CheckCircle,
@@ -25,21 +25,27 @@ import {
   Settings,
   FileText,
   Lightbulb,
-  LogOut
-} from 'lucide-react'
+  LogOut,
+  AlertTriangle
+} from './components/icons'
 import './App.css'
 
 // Import components
-import LessonContentView from './components/LessonContentView.jsx';
-import CheatSheetView from './components/CheatSheetView.jsx';
-import ProjectsView from './components/ProjectsView.jsx';
-import CapabilityMatrixView from './components/CapabilityMatrixView.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import AuthWrapper from './components/auth/AuthWrapper.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 import { getFileContent, safeAsync } from './lib/utils';
 import HeroPlaceholder from './assets/hero-placeholder.jsx';
+import { useContentPreloader, useContextualPreloader, useIntelligentPreloader } from './hooks/useContentPreloader.js';
+
+// Import lazy-loaded components
+import {
+  LazyLessonContentView,
+  LazyCheatSheetView,
+  LazyProjectsView,
+  LazyCapabilityMatrixView
+} from './components/LazyComponents.jsx';
 
 const AppContent = () => {
   const { user, markLessonComplete, getCompletedLessons, signOut } = useAuth()
@@ -57,6 +63,11 @@ const AppContent = () => {
   const [error, setError] = useState(null);
   
   const completedLessons = getCompletedLessons()
+
+  // Initialize content preloading
+  useContentPreloader()
+  useContextualPreloader(currentModule, currentView)
+  useIntelligentPreloader(completedLessons, currentLesson)
 
   // Course data structure
   const courseData = {
@@ -616,14 +627,14 @@ const AppContent = () => {
 
   const renderContent = () => {
     if (currentView === 'lesson') {
-      return <LessonContentView 
-        lesson={{ title: currentLesson.title, content: lessonContent }} 
-        onBack={() => setCurrentView('modules')} 
-        onComplete={handleCompleteLesson} 
+      return <LazyLessonContentView
+        lesson={{ title: currentLesson.title, content: lessonContent }}
+        onBack={() => setCurrentView('modules')}
+        onComplete={handleCompleteLesson}
       />;
     }
     if (currentView === 'cheatsheet') {
-    return <CheatSheetView sheet={currentCheatSheet} onBack={() => setCurrentView("resources")} />;
+    return <LazyCheatSheetView sheet={currentCheatSheet} onBack={() => setCurrentView("resources")} />;
     }
     switch (currentView) {
       case 'dashboard':
@@ -633,9 +644,9 @@ const AppContent = () => {
       case 'resources':
         return <ResourcesView />
       case 'projects':
-        return <ProjectsView content={projectsContent} />
+        return <LazyProjectsView content={projectsContent} />
       case 'matrix':
-        return <CapabilityMatrixView matrix={currentMatrix} onBack={() => setCurrentView('resources')} />
+        return <LazyCapabilityMatrixView matrix={currentMatrix} onBack={() => setCurrentView('resources')} />
       default:
         return <DashboardView />
     }

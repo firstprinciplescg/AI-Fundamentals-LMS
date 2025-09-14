@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
+import { contentCache } from './contentCache.js'
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -16,15 +17,28 @@ export async function safeAsync(fn, fallback = null) {
   }
 }
 
-// Fetch content with error handling
-export async function getFileContent(path) {
+// Fetch content with caching and error handling
+export async function getFileContent(path, useCache = true) {
+  // Generate cache key from path
+  const cacheKey = path.replace(/[^a-zA-Z0-9]/g, '-')
+
+  // Try cache first if enabled
+  if (useCache) {
+    const cached = contentCache.get('content', cacheKey)
+    if (cached) {
+      return cached
+    }
+  }
+
   try {
     const response = await fetch(path);
 
     if (!response.ok) {
       // Handle specific error cases
       if (response.status === 404) {
-        return `# Content Not Found\n\nThe requested lesson content could not be found. Please check if the file exists at: ${path}`;
+        const errorContent = `# Content Not Found\n\nThe requested lesson content could not be found. Please check if the file exists at: ${path}`;
+        // Don't cache error responses
+        return errorContent;
       }
 
       throw new Error(`Failed to load content: ${response.status} ${response.statusText}`);
@@ -34,14 +48,21 @@ export async function getFileContent(path) {
 
     // Check if content is empty
     if (!content || content.trim() === '') {
-      return `# No Content Available\n\nThis lesson appears to be empty. Content may be added soon.`;
+      const emptyContent = `# No Content Available\n\nThis lesson appears to be empty. Content may be added soon.`;
+      // Don't cache empty content
+      return emptyContent;
+    }
+
+    // Cache successful content
+    if (useCache) {
+      contentCache.set('content', cacheKey, content)
     }
 
     return content;
   } catch (error) {
     console.error(`Error loading content from ${path}:`, error);
 
-    // Return user-friendly error message
+    // Return user-friendly error message (don't cache)
     return `# Error Loading Content\n\nWe're having trouble loading this content. Please try refreshing the page.\n\n**Technical details:** ${error.message}`;
   }
 }

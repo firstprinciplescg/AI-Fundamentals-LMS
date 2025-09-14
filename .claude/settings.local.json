@@ -29,7 +29,8 @@
       "Bash(where claude)",
       "Bash(curl:*)",
       "Bash(git rm:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npx vite-bundle-analyzer:*)"
     ],
     "deny": [],
     "ask": []
