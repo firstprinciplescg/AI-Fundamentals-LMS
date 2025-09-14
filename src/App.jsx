@@ -34,10 +34,11 @@ import LessonContentView from './components/LessonContentView.jsx';
 import CheatSheetView from './components/CheatSheetView.jsx';
 import ProjectsView from './components/ProjectsView.jsx';
 import CapabilityMatrixView from './components/CapabilityMatrixView.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import AuthWrapper from './components/auth/AuthWrapper.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
-import { getFileContent } from './lib/utils';
+import { getFileContent, safeAsync } from './lib/utils';
 import HeroPlaceholder from './assets/hero-placeholder.jsx';
 
 const AppContent = () => {
@@ -50,6 +51,10 @@ const AppContent = () => {
   const [currentCheatSheet, setCurrentCheatSheet] = useState(null);
   const [projectsContent, setProjectsContent] = useState("");
   const [currentMatrix, setCurrentMatrix] = useState(null);
+
+  // Loading states
+  const [loadingContent, setLoadingContent] = useState(false);
+  const [error, setError] = useState(null);
   
   const completedLessons = getCompletedLessons()
 
@@ -185,47 +190,103 @@ const AppContent = () => {
   ]
 
   const handleSelectLesson = async (moduleId, lessonIndex) => {
-    const lessonId = `${moduleId}-${lessonIndex}`;
-    const lessonTitle = courseData.modules.find(m => m.id === moduleId).lessons_list[lessonIndex];
-    setCurrentLesson({ id: lessonId, title: lessonTitle });
+    try {
+      setLoadingContent(true);
+      setError(null);
 
-    // Transform lesson title to match actual filename pattern
-    const lessonFile = lessonTitle
-      .toLowerCase()
-      .replace(/ /g, "_")
-      .replace(/\(/g, "_(")
-      .replace(/\)/g, ")_")
-      .replace(/,/g, ",_")
-      .replace(/&/g, "_and_")
-      .replace(/_+/g, "_") // Replace multiple underscores with single
-      .replace(/,__/g, ",_") // Handle double underscores after commas
-      .replace(/\)__/g, ")_") // Handle double underscores after closing paren
-      .replace(/_$/, "") // Remove trailing underscore
-      + ".md";
-    
-    const fetchedContent = await getFileContent(`/lessons/${lessonFile}`);
-    setLessonContent(fetchedContent);
-    setCurrentView('lesson');
+      const lessonId = `${moduleId}-${lessonIndex}`;
+      const lessonTitle = courseData.modules.find(m => m.id === moduleId).lessons_list[lessonIndex];
+      setCurrentLesson({ id: lessonId, title: lessonTitle });
+
+      // Transform lesson title to match actual filename pattern
+      const lessonFile = lessonTitle
+        .toLowerCase()
+        .replace(/ /g, "_")
+        .replace(/\(/g, "_(")
+        .replace(/\)/g, ")_")
+        .replace(/,/g, ",_")
+        .replace(/&/g, "_and_")
+        .replace(/_+/g, "_") // Replace multiple underscores with single
+        .replace(/,__/g, ",_") // Handle double underscores after commas
+        .replace(/\)__/g, ")_") // Handle double underscores after closing paren
+        .replace(/_$/, "") // Remove trailing underscore
+        + ".md";
+
+      const fetchedContent = await safeAsync(
+        () => getFileContent(`/lessons/${lessonFile}`),
+        '# Content Loading Error\n\nUnable to load lesson content. Please try again.'
+      );
+
+      setLessonContent(fetchedContent);
+      setCurrentView('lesson');
+    } catch (error) {
+      setError(error);
+      console.error('Failed to load lesson:', error);
+    } finally {
+      setLoadingContent(false);
+    }
   };
 
   const handleSelectCheatSheet = async (sheetFile) => {
-    const fetchedContent = await getFileContent(`/lessons/${sheetFile}`);
-    setCurrentCheatSheet({ title: sheetFile, content: fetchedContent });
-    setCurrentView("cheatsheet");
+    try {
+      setLoadingContent(true);
+      setError(null);
+
+      const fetchedContent = await safeAsync(
+        () => getFileContent(`/lessons/${sheetFile}`),
+        '# Content Loading Error\n\nUnable to load cheat sheet content. Please try again.'
+      );
+
+      setCurrentCheatSheet({ title: sheetFile, content: fetchedContent });
+      setCurrentView("cheatsheet");
+    } catch (error) {
+      setError(error);
+      console.error('Failed to load cheat sheet:', error);
+    } finally {
+      setLoadingContent(false);
+    }
   };
 
   
   
   const handleShowMatrix = async (matrixFile) => {
-    const fetchedContent = await getFileContent(`/lessons/${matrixFile}`);
-    setCurrentMatrix({ title: matrixFile, content: fetchedContent });
-    setCurrentView("matrix");
+    try {
+      setLoadingContent(true);
+      setError(null);
+
+      const fetchedContent = await safeAsync(
+        () => getFileContent(`/lessons/${matrixFile}`),
+        '# Content Loading Error\n\nUnable to load matrix content. Please try again.'
+      );
+
+      setCurrentMatrix({ title: matrixFile, content: fetchedContent });
+      setCurrentView("matrix");
+    } catch (error) {
+      setError(error);
+      console.error('Failed to load matrix:', error);
+    } finally {
+      setLoadingContent(false);
+    }
   };
 
   const handleShowProjects = async () => {
-    const fetchedContent = await getFileContent(`/lessons/Projects.md`);
-    setProjectsContent(fetchedContent);
-    setCurrentView("projects");
+    try {
+      setLoadingContent(true);
+      setError(null);
+
+      const fetchedContent = await safeAsync(
+        () => getFileContent(`/lessons/Projects.md`),
+        '# Content Loading Error\n\nUnable to load projects content. Please try again.'
+      );
+
+      setProjectsContent(fetchedContent);
+      setCurrentView("projects");
+    } catch (error) {
+      setError(error);
+      console.error('Failed to load projects:', error);
+    } finally {
+      setLoadingContent(false);
+    }
   };
 
   const handleCompleteLesson = async () => {
@@ -581,7 +642,38 @@ const AppContent = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
+    <div className="flex min-h-screen bg-gray-50 font-sans relative">
+      {/* Loading Overlay */}
+      {loadingContent && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[150] flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 shadow-lg flex items-center gap-3">
+            <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-600 border-t-transparent"></div>
+            <span className="text-gray-700 font-medium">Loading content...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <div className="fixed top-4 right-4 z-[140] bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg max-w-md">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
+            <div>
+              <p className="text-red-800 font-medium">Error</p>
+              <p className="text-red-700 text-sm mt-1">{error.message || 'Something went wrong'}</p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="mt-2"
+                onClick={() => setError(null)}
+              >
+                Dismiss
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:relative md:translate-x-0`}>
         <div className="p-6">
@@ -670,11 +762,13 @@ const TestApp = () => {
 
 const App = () => {
   return (
-    <AuthProvider>
-      <AuthWrapper>
-        <AppContent />
-      </AuthWrapper>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AuthWrapper>
+          <AppContent />
+        </AuthWrapper>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
 
