@@ -450,7 +450,7 @@ const AppContent = () => {
             const progressPercent = (moduleProgress / module.lessons) * 100
 
             return (
-              <Card key={module.id} className="hover:shadow-lg transition-shadow">
+              <Card key={module.id} className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
                   <div className="flex items-start gap-4">
                     <div className={`w-16 h-16 rounded-xl ${module.color} flex items-center justify-center flex-shrink-0`}>
@@ -511,7 +511,7 @@ const AppContent = () => {
             const isCompleted = completedLessons.has(lessonId)
             
             return (
-              <Card key={index} className={`transition-all ${isCompleted ? 'bg-green-50 border-green-200' : 'hover:shadow-md'}`}>
+              <Card key={index} className={`transition-all cursor-pointer ${isCompleted ? 'bg-green-50 border-green-200' : 'hover:shadow-md'}`}>
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isCompleted ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}>

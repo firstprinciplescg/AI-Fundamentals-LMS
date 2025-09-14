@@ -117,3 +117,49 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* Ensure all interactive elements show pointer cursor */
+  button,
+  [role="button"],
+  [tabindex="0"],
+  a,
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  /* Specific clickable elements */
+  .clickable,
+  [onclick],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  select,
+  label[for],
+  summary {
+    cursor: pointer;
+  }
+
+  /* Interactive UI elements */
+  .card[onClick],
+  .card:has(button),
+  [data-clickable="true"],
+  .hover\:shadow-lg,
+  .hover\:shadow-md {
+    cursor: pointer;
+  }
+
+  /* Disabled states should show not-allowed cursor */
+  button:disabled,
+  [role="button"]:disabled,
+  input:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Loading states should show wait cursor */
+  .loading,
+  [aria-busy="true"] {
+    cursor: wait;
+  }
+}
