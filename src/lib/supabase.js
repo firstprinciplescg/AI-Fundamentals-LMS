@@ -15,7 +15,19 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-supabase
 // Only create Supabase client if not in dev mode or if we have real credentials
 export const supabase = isDevMode && supabaseUrl.includes('demo')
   ? null
-  : createClient(supabaseUrl, supabaseAnonKey)
+  : createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: false,
+        flowType: 'pkce'
+      },
+      global: {
+        headers: {
+          'X-Client-Info': 'ai-fundamentals-lms'
+        }
+      }
+    })
 
 // Auth helpers
 export const auth = {
