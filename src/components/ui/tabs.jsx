@@ -3,9 +3,10 @@ import * as React from "react"
 const Tabs = ({ value, onValueChange, children, className, ...props }) => {
   return (
     <div className={className} {...props}>
-      {React.Children.map(children, child =>
-        React.cloneElement(child, { value, onValueChange })
-      )}
+      {React.Children.map(children, child => {
+        if (!React.isValidElement(child)) return null
+        return React.cloneElement(child, { currentValue: value, onValueChange })
+      })}
     </div>
   )
 }
@@ -13,22 +14,31 @@ const Tabs = ({ value, onValueChange, children, className, ...props }) => {
 const TabsList = ({ children, className, ...props }) => {
   return (
     <div
-      className={`inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground ${className || ''}`}
+      className={`inline-flex h-9 items-center justify-center rounded-lg bg-gray-100 p-1 text-gray-500 ${className || ''}`}
       {...props}
     >
-      {children}
+      {React.Children.map(children, child => {
+        if (!React.isValidElement(child)) return null
+        return React.cloneElement(child, child.props)
+      })}
     </div>
   )
 }
 
-const TabsTrigger = ({ value, children, className, onValueChange, ...props }) => {
+const TabsTrigger = ({ value, children, className, onValueChange, currentValue, ...props }) => {
   const handleClick = () => {
     onValueChange?.(value)
   }
 
+  const isActive = currentValue === value
+
   return (
     <button
-      className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow ${className || ''}`}
+      className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 ${
+        isActive
+          ? 'bg-white text-gray-900 shadow border'
+          : 'hover:bg-gray-50 text-gray-600'
+      } ${className || ''}`}
       onClick={handleClick}
       {...props}
     >
@@ -37,13 +47,12 @@ const TabsTrigger = ({ value, children, className, onValueChange, ...props }) =>
   )
 }
 
-const TabsContent = ({ value, children, className, ...props }) => {
-  const currentValue = props.value
+const TabsContent = ({ value, currentValue, children, className, ...props }) => {
   if (currentValue !== value) return null
 
   return (
     <div
-      className={`mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className || ''}`}
+      className={`mt-4 ${className || ''}`}
       {...props}
     >
       {children}
