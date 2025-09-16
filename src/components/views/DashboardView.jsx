@@ -73,7 +73,7 @@ const DashboardView = ({ courseData, completedLessons, setCurrentModule, navigat
               </div>
               <Progress value={totalProgress} className="h-3" />
             </div>
-            <div className="grid grid-cols-4 gap-4 pt-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
               <div>
                 <div className="text-2xl font-bold text-blue-600">{completedLessons.size}</div>
                 <div className="text-sm text-muted-foreground">Completed</div>
